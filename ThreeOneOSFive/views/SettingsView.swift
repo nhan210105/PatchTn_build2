@@ -31,22 +31,11 @@ struct SettingsView: View {
                 Section("Liquid Glass") {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 52), spacing: 10)], spacing: 10) {
                         ForEach(AppTheme.palette) { item in
-                            Button {
-                                withAnimation(.easeInOut(duration: 0.20)) { themeIndex = item.id }
-                            } label: {
-                                VStack(spacing: 5) {
-                                    Circle()
-                                        .fill(LinearGradient(colors: [item.color, item.secondary], startPoint: .topLeading, endPoint: .bottomTrailing))
-                                        .frame(width: 34, height: 34)
-                                        .overlay(Circle().stroke(Color.white.opacity(themeIndex == item.id ? 0.9 : 0.18), lineWidth: themeIndex == item.id ? 2 : 0.7))
-                                        .shadow(color: item.color.opacity(themeIndex == item.id ? 0.65 : 0.15), radius: themeIndex == item.id ? 7 : 2)
-                                    Text(item.name)
-                                        .font(.system(size: 9, weight: .semibold))
-                                        .foregroundStyle(.primary)
+                            PaletteColorButton(item: item, isSelected: themeIndex == item.id) {
+                                withAnimation(.easeInOut(duration: 0.20)) {
+                                    themeIndex = item.id
                                 }
-                                .frame(maxWidth: .infinity)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.vertical, 4)
@@ -190,6 +179,41 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    private struct PaletteColorButton: View {
+        let item: AppTheme.PaletteItem
+        let isSelected: Bool
+        let action: () -> Void
+
+        var body: some View {
+            Button(action: action) {
+                VStack(spacing: 5) {
+                    Circle()
+                        .fill(LinearGradient(
+                            colors: [item.color, item.secondary],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ))
+                        .frame(width: 34, height: 34)
+                        .overlay {
+                            Circle().stroke(
+                                Color.white.opacity(isSelected ? 0.9 : 0.18),
+                                lineWidth: isSelected ? 2 : 0.7
+                            )
+                        }
+                        .shadow(
+                            color: item.color.opacity(isSelected ? 0.65 : 0.15),
+                            radius: isSelected ? 7 : 2
+                        )
+                    Text(item.name)
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(.primary)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.plain)
         }
     }
 

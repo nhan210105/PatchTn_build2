@@ -1,3 +1,6 @@
+import SwiftUI
+import UIKit
+
 @main
 struct ThreeOneOSFiveApp: App {
     @StateObject private var appState = AppState()
